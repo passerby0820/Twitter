@@ -9,7 +9,7 @@ from nltk.corpus import stopwords
 from nltk import PorterStemmer
 
 
-class TweetParsing(object):
+class TweetParsing:
 
     # convert raw tweet text into a list of words, remove html tags, 
     # punctuations, and optionally stopwords.
@@ -44,20 +44,6 @@ class TweetParsing(object):
         # reduce words to their stems
         stemmer=PorterStemmer()
         words_list=[stemmer.stem(word) for word in words_list]
-        # return the list of words
-        return words_list
+        words_string = ' '.join(words_list)
 
-
-
-    # convert a list of tweet texts to a list of clean processed tweet texts with
-    # each tweet text a list of words
-    @staticmethod
-    def all_tweets_to_words(tweets_list, remove_stopwords = False):
-
-        clean_tweets = []
-        for tweet in tweets_list:
-            if len(tweet) > 0:
-                clean_tweets.append(
-                    TweetParsing.tweet_to_words(tweet, remove_stopwords))
-
-        return clean_tweets
+        return words_string
