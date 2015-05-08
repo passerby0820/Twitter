@@ -4,7 +4,8 @@
 This code filters Twitter tweets. It takes tweets collected through
 Twitter Streaming API over one month in Toronto region and
 a vocabulary (keywords) file, and processes the 'text' field in tweets
-to filter tweets that are relevant to the specific domain.
+to filter tweets that are relevant to the specific domain. It also drives a
+new vocabulary from the tweets.
 '''
 
 
@@ -34,27 +35,21 @@ def main():
     tweet_set = TweetToMongo('toronto_tweets')
 
     #insert tweets from the txt file to a MongoDB collection
-    #tweet_set.insert_to_collection('toronto_tweets.txt', 'tweets')
+    tweet_set.insert_to_collection('toronto_tweets.txt', 'tweets')
 
-    #create a seed_vocab list from items in the vocab.txt file
+    #create a vocab list from items in the vocab.txt file
     f = open('vocab.txt', 'r')
-    seed_vocab = f.readlines()
+    vocab = f.readlines()
     f.close()
-    seed_vocab = [item.replace('\n', '').decode('utf-8') for item in seed_vocab]
+    vocab = [item.replace('\n', '').decode('utf-8') for item in vocab]
 
     #filter tweets containing words of the vocab
-    #tweet_set.filter_tweets(seed_vocab, 'tweets', 'health')
+    tweet_set.filter_tweets(vocab, 'tweets', 'health')
 
-    vocab = seed_vocab
-    count =1
-    #call the get_vocab_tweets method recursively to build a vocab from tweets
-    while count<3:
-        new_vocab = tweet_set.get_tweets_vocab(vocab, seed_vocab, 'tweets')
-        vocab = new_vocab
-        print 'Round %d of vocabulary building ended\n' %count
-        count += 1
-    print vocab
+    #call the get_tweets_vocab method to build a vocab from tweets
+    new_vocab = tweet_set.get_tweets_vocab(vocab, 'tweets')
 
+    print new_vocab
 
     #close the MongoDB connection
     tweet_set.client.close()
