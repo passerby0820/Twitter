@@ -43,8 +43,11 @@ def main():
     f.close()
     vocab = [item.replace('\n', '').decode('utf-8') for item in vocab]
 
+    #join items in the vocab list by '|', which works as or
+    regex_string = '|'.join(vocab)
+
     #filter tweets containing words of the vocab
-    tweet_set.filter_tweets(vocab, 'tweets', 'health')
+    tweet_set.filter_tweets(regex_string, 'tweets', 'health')
 
     #call the get_tweets_vocab method to build a vocab from tweets
     new_vocab = tweet_set.get_tweets_vocab(vocab, 'tweets')

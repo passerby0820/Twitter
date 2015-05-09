@@ -47,32 +47,25 @@ class TweetToMongo:
 
 
 
-    def filter_tweets(self, vocab, collection_in, collection_out):
-        #given a vocabulary of keywords, filter tweets that contain at least
-        #one word of the vocab.
+    def filter_tweets(self, regex_string, collection_in, collection_out = None):
+        #given a pattern REGEX, filter tweets that contain that pattern/word
         db = self.database
-        #join items in the vocab list by '|', which works as or
-        regex_string= '|'.join(vocab)
-        REGEX = re.compile(regex_string)
-        filtered_tweets = db[collection_in].find({'text': {'$regex':REGEX}})
+        print 'Filtering tweets containing a word of the vocab ... \n'
+        filtered_tweets = db[collection_in].find({'text': {'$regex':regex_string}})
+        # len(re.findall(regex_string, tweet['text'])) shows number of matches
 
-        for tweet in filtered_tweets:
-            db[collection_out].insert(tweet, safe = True)
+        if collection_out:
+            for tweet in filtered_tweets:
+                db[collection_out].insert(tweet, safe = True)
+        else:
+            return filtered_tweets
 
 
 
-    def get_tweets_vocab(self, vocab, collection_name):
-        #take a seed vocab and build a new vocab of tweets containing
-        #words of the seed vocab
-        db = self.database
+    @staticmethod
+    def parse_tweets_tolist(filtered_tweets):
 
         parsed_tweets = []
-
-        regex_string = '|'.join(vocab)
-        REGEX = re.compile(regex_string)
-
-        print 'Filtering tweets containing a word of the vocab ... \n'
-        filtered_tweets = db[collection_name].find({'text': {'$regex':REGEX}})
 
         num = 1
         for tweet in filtered_tweets:
@@ -80,15 +73,28 @@ class TweetToMongo:
             if num>=10000 and num%10000 == 0:
                 print 'Parsing filtered tweet %d  \n' %num
 
-            # could use len(re.findall(regex_string, tweet['text'])) to see how
-            # many matches are in each tweet
-
             #use the tweet_to_words method to parse tweets
             parsed_tweet = TweetParsing.tweet_to_words(tweet['text'],
                                                        remove_stopwords = True)
 
             parsed_tweets.append(parsed_tweet)
             num += 1
+
+        return parsed_tweets
+
+
+
+    def get_tweets_vocab(self, vocab, collection_name):
+        #take a seed vocab and build a new vocab of tweets containing
+        #words of the seed vocab
+
+        #join items in the vocab list by '|', which works as or
+        regex_string = '|'.join(vocab)
+
+        filtered_tweets = self.filter_tweets(regex_string, collection_name)
+
+        print 'Parsing tweets started ... \n'
+        parsed_tweets = self.parse_tweets_tolist(filtered_tweets)
 
         print 'Bag of words ... \n'
         #find a vocab of the filtered tweets and vectorize them using bag of words
