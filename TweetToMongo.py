@@ -64,9 +64,9 @@ class TweetToMongo:
 
     @staticmethod
     def parse_tweets_tolist(filtered_tweets):
-
+        # take a set of tweets, parse the text field in each tweet, and return
+        # a list of parsed tweet texts.
         parsed_tweets = []
-
         num = 1
         for tweet in filtered_tweets:
 
@@ -76,7 +76,6 @@ class TweetToMongo:
             #use the tweet_to_words method to parse tweets
             parsed_tweet = TweetParsing.tweet_to_words(tweet['text'],
                                                        remove_stopwords = True)
-
             parsed_tweets.append(parsed_tweet)
             num += 1
 
