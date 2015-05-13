@@ -11,10 +11,11 @@ from nltk import PorterStemmer
 
 class TweetParsing:
 
-    # convert raw tweet text into a list of words, remove html tags, 
-    # punctuations, and optionally stopwords.
     @staticmethod
     def tweet_to_words(tweet, remove_stopwords = False):
+        '''converts raw tweet text into a list of words, removes html tags,
+        punctuations, and optionally stopwords.'''
+
         # BeautifulSoup pulls data out of html file
         # here it removes html tags and markups
         text = BeautifulSoup(tweet).get_text()
