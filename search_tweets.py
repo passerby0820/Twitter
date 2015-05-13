@@ -14,9 +14,9 @@ import re
 from TweetToMongo import TweetToMongo
 
 
-
-#find vocab from a webpage txt file
 def get_seed_vocab(file_in, file_out, regex_string):
+    '''finds vocab from a webpage txt file'''
+
     f = open(file_in, 'r')
     match = set(re.findall(regex_string, f.read()))
     f.close()
