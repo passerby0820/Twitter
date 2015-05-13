@@ -18,8 +18,8 @@ from sklearn.feature_extraction.text import CountVectorizer
 class TweetToMongo:
 
     def __init__(self, db_name):
-        #connect to MongoDB
-        #create databse db_name if not exists, or use it if exists
+        '''connects to MongoDB
+        and creates database db_name if not exists, or use it if exists'''
         try:
             self.client = pymongo.Connection(host = 'localhost', port = 27017)
             self.database = self.client[db_name]
@@ -31,7 +31,7 @@ class TweetToMongo:
 
 
     def insert_to_collection(self, filename, collection_name):
-        #insert tweets from txt file to a MongoDB collection tweets
+        '''inserts tweets from a txt file to a MongoDB collection tweets'''
         db = self.database
         f = open(filename, 'r')
         for line in f:
@@ -48,7 +48,7 @@ class TweetToMongo:
 
 
     def filter_tweets(self, regex_string, collection_in, collection_out = None):
-        #given a pattern REGEX, filter tweets that contain that pattern/word
+        '''given a pattern regex_string, filters tweets that contain that pattern'''
         db = self.database
         print 'Filtering tweets containing a word of the vocab ... \n'
         filtered_tweets = db[collection_in].find({'text': {'$regex':regex_string}})
@@ -64,8 +64,8 @@ class TweetToMongo:
 
     @staticmethod
     def parse_tweets_tolist(filtered_tweets):
-        # take a set of tweets, parse the text field in each tweet, and return
-        # a list of parsed tweet texts.
+        '''takes a set of tweets, parses the text field in each tweet, and returns
+        a list of parsed tweet texts.'''
         parsed_tweets = []
         num = 1
         for tweet in filtered_tweets:
@@ -84,8 +84,8 @@ class TweetToMongo:
 
 
     def get_tweets_vocab(self, vocab, collection_name):
-        #take a seed vocab and build a new vocab of tweets containing
-        #words of the seed vocab
+        '''takes a seed vocab and builds a new vocab of tweets containing
+        words of the seed vocab'''
 
         #join items in the vocab list by '|', which works as or
         regex_string = '|'.join(vocab)
