@@ -20,9 +20,9 @@ consumer_secret = your secret ...
 
 
 class StdOutListener(StreamListener):
-#this is a basic listener that just prints received tweets to stdout.
-#StdOutListener is a subclass of the StreamListener that inherits all methods of
-#StreamListener including on_data and on_error, which I override here.
+'''this is a basic listener that just prints received tweets to stdout.
+StdOutListener is a subclass of the StreamListener that inherits all methods of
+StreamListener including on_data and on_error, which are override here.'''
 
 
     def on_data(self, data):
@@ -49,7 +49,9 @@ def main():
         try:
             #filters Twitter Streams to capture data by the keywords
             #set async = False to avoid starting a new thread
-            stream.filter(track=['anxiety', 'stress'], async = False)
+            stream.filter(track=['#HillaryForAmerica', '#WhyImNotVotingForHillary',
+                                 async = False)
+
             break
         except:
             time.sleep(nsec)
